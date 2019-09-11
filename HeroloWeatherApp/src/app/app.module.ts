@@ -3,18 +3,33 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomePageComponent } from './home-page/home-page.component';
-import { FavoritesComponent } from './favorites/favorites.component';
+import { RouterModule } from "@angular/router";
+import { HomePageComponent } from '../app/home-page/home-page.component';
+import { FavoritesComponent } from '../app/favorites/favorites.component';
+import { WeatherService} from '../app/weather.service';
+
+
+const appRoutes = [
+  {
+    path: '', component: HomePageComponent
+  },
+  {
+    path: 'home', component: FavoritesComponent
+  },
+  {
+    path: 'favorites', component: FavoritesComponent
+  }
+];
 
 @NgModule({
   declarations: [
-    AppComponent,
-    HomePageComponent,
-    FavoritesComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    WeatherService,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]
