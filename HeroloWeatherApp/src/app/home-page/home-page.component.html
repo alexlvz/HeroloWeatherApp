@@ -1,3 +1,126 @@
-<p>
-  home-page works!
-</p>
+<nav class="nav-style navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Herolo WeatherApp</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="nav navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Favorites</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="search">
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Search for a city..." (keyup.enter)="getSearchResults()" [(ngModel)]="searched_city">
+    <span class="input-group-btn">
+      <button class="btn btn-search" type="button" (click)="getSearchResults()"><i class="fa fa-search fa-fw"></i></button>
+    </span>
+  </div>
+</div>
+
+<div class="container">
+  <div style="padding-top: 2%;">
+    <table class="top_main_view" align="center">
+      <tr class="spaceUnderTop">
+        <td align="left">
+          <table style="width: 30%">
+            <tr>
+              <td>
+                <img src='{{"/assets/icons/" + this.CityWeather.icon +"-s.png"}}' alt="" height="120%" width="100%" />
+              </td>
+              <td valign="center">
+                {{this.CityWeather.city_name}}
+                <br>
+                {{this.CityWeather.current_temp}}&nbsp;&#8451;
+              </td>
+            </tr>
+
+          </table>
+        </td>
+        <td align="right" valign="top">
+          <button>Add to favorites</button>
+        </td>
+      </tr>
+    </table>
+    <table class="main_view" align="center">
+      <tr class="spaceUnderMain">
+        <td style="font-size: 42pt" align="center" colspan="5">
+          {{this.CityWeather.weather_description}}
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          {{this.CityForecast[0].day}}
+          <br>
+          {{this.CityForecast[0].date}}
+        </td>
+        <td align="center">
+          {{this.CityForecast[1].day}}
+          <br>
+          {{this.CityForecast[1].date}}
+        </td>
+        <td align="center">
+          {{this.CityForecast[2].day}}
+          <br>
+          {{this.CityForecast[2].date}}
+        </td>
+        <td align="center">
+          {{this.CityForecast[3].day}}
+          <br>
+          {{this.CityForecast[3].date}}
+        </td>
+        <td align="center">
+          {{this.CityForecast[4].day}}
+          <br>
+          {{this.CityForecast[4].date}}
+        </td>
+      </tr>
+      <tr>
+          <td align="center">
+              <img src='{{"/assets/icons/" + this.CityForecast[0].icon +"-s.png"}}' alt=""/>
+          </td>
+          <td align="center">
+              <img src='{{"/assets/icons/" + this.CityForecast[1].icon +"-s.png"}}' alt=""/>
+          </td>
+          <td align="center">
+              <img src='{{"/assets/icons/" + this.CityForecast[2].icon +"-s.png"}}' alt=""/>
+          </td>
+          <td align="center">
+              <img src='{{"/assets/icons/" + this.CityForecast[3].icon +"-s.png"}}' alt=""/>
+          </td>
+          <td align="center">
+              <img src='{{"/assets/icons/" + this.CityForecast[4].icon +"-s.png"}}' alt=""/>
+          </td>
+        </tr>
+        <tr>
+            <td align="center">
+              {{this.CityForecast[0].max_temp}}/{{this.CityForecast[0].min_temp}}&nbsp;&#8451;
+            </td>
+            <td align="center">
+              {{this.CityForecast[1].max_temp}}/{{this.CityForecast[1].min_temp}}&nbsp;&#8451;
+            </td>
+            <td align="center">
+              {{this.CityForecast[2].max_temp}}/{{this.CityForecast[2].min_temp}}&nbsp;&#8451;
+            </td>
+            <td align="center">
+              {{this.CityForecast[3].max_temp}}/{{this.CityForecast[3].min_temp}}&nbsp;&#8451;
+            </td>
+            <td align="center">
+              {{this.CityForecast[4].max_temp}}/{{this.CityForecast[4].min_temp}}&nbsp;&#8451;
+            </td>
+          </tr>
+    </table>
+  </div>
+
+
+  <!-- <input ngx-google-places-autocomplete [options]='options' #placesRef="ngx-places"
+    (onAddressChange)="handleAddressChange($event)" /> -->
+
+</div>
