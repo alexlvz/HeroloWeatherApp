@@ -1,10 +1,10 @@
 export class CityWeather {
 
-    public city_name: String;
-    public current_temp: Number;
-    public weather_description: String;
+    public city_name: string;
+    public current_temp: number;
+    public weather_description: string;
     public forecast: [];
-    public icon: Number;
+    public icon: number;
 
     constructor(){}
 }

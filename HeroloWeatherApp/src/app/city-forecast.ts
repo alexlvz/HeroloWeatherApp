@@ -1,9 +1,9 @@
 export class CityForecast {
 
-    public max_temp: Number;
-    public min_temp: Number;
-    public icon: Number;
-    public day: String;
-    public date: String;
+    public max_temp: number;
+    public min_temp: number;
+    public icon: number;
+    public day: string;
+    public date: string;
 
 }

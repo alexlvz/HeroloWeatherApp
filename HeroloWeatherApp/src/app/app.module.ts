@@ -16,7 +16,7 @@ const appRoutes = [
     path: '', component: HomePageComponent
   },
   {
-    path: 'home', component: FavoritesComponent
+    path: 'home', component: HomePageComponent
   },
   {
     path: 'favorites', component: FavoritesComponent

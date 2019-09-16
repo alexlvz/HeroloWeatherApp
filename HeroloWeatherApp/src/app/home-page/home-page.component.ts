@@ -17,57 +17,95 @@ export class HomePageComponent implements OnInit {
   private response_search = [{ "Version": 1, "Key": "213225", "Type": "City", "Rank": 30, "LocalizedName": "Jerusalem", "Country": { "ID": "IL", "LocalizedName": "Israel" }, "AdministrativeArea": { "ID": "JM", "LocalizedName": "Jerusalem" } }, { "Version": 1, "Key": "250835", "Type": "City", "Rank": 65, "LocalizedName": "Jerusalem", "Country": { "ID": "NZ", "LocalizedName": "New Zealand" }, "AdministrativeArea": { "ID": "MWT", "LocalizedName": "Manawatu-Wanganui" } }, { "Version": 1, "Key": "221483", "Type": "City", "Rank": 75, "LocalizedName": "Jerusalem", "Country": { "ID": "JM", "LocalizedName": "Jamaica" }, "AdministrativeArea": { "ID": "10", "LocalizedName": "Westmoreland" } }, { "Version": 1, "Key": "3496636", "Type": "City", "Rank": 85, "LocalizedName": "Jerusalem", "Country": { "ID": "AU", "LocalizedName": "Australia" }, "AdministrativeArea": { "ID": "SA", "LocalizedName": "South Australia" } }, { "Version": 1, "Key": "1376675", "Type": "City", "Rank": 85, "LocalizedName": "Jerusalem", "Country": { "ID": "CZ", "LocalizedName": "Czechia" }, "AdministrativeArea": { "ID": "20", "LocalizedName": "Central Bohemian" } }, { "Version": 1, "Key": "1062990", "Type": "City", "Rank": 85, "LocalizedName": "Jerusalem", "Country": { "ID": "MX", "LocalizedName": "Mexico" }, "AdministrativeArea": { "ID": "CHP", "LocalizedName": "Chiapas" } }, { "Version": 1, "Key": "1062987", "Type": "City", "Rank": 85, "LocalizedName": "Jerusalem", "Country": { "ID": "MX", "LocalizedName": "Mexico" }, "AdministrativeArea": { "ID": "DUR", "LocalizedName": "Durango" } }, { "Version": 1, "Key": "1062988", "Type": "City", "Rank": 85, "LocalizedName": "Jerusalem", "Country": { "ID": "MX", "LocalizedName": "Mexico" }, "AdministrativeArea": { "ID": "JAL", "LocalizedName": "Jalisco" } }, { "Version": 1, "Key": "3429142", "Type": "City", "Rank": 85, "LocalizedName": "Jerusalem", "Country": { "ID": "PH", "LocalizedName": "Philippines" }, "AdministrativeArea": { "ID": "NEC", "LocalizedName": "Negros Occidental" } }, { "Version": 1, "Key": "2115414", "Type": "City", "Rank": 85, "LocalizedName": "Jerusalem", "Country": { "ID": "US", "LocalizedName": "United States" }, "AdministrativeArea": { "ID": "OH", "LocalizedName": "Ohio" } }];
   private response_obj;
   private searched_city;
+  private searchResults = false;
 
   private CityWeather: CityWeather;
   private CityForecast = [];
+  private in_favorites;
 
   ngOnInit() {
 
     this.CityWeather = new CityWeather();
-    this.getCurrentCityWeather("Tel Aviv");
-    //this.current_city_temp = 
+    this.getCurrentCityWeather("215854", "Tel Aviv", false);
+  }
 
-    // this.response_obj = JSON.parse(JSON.stringify(this.response_current));
-    // console.log(this.response_obj[0].Temperature.Metric.Value)
-    // console.log(this.response_obj[0].Temperature.Imperial.Value)
+  saveToFavorites(city: CityWeather) {
+    //let stored_data;
 
-    // this._weatherService.getSearchResults("Jerusalem").subscribe(
-    //   response => {
-    //     console.log(JSON.stringify(response));
-    //   }
-    // );
+    //stored_data = localStorage.getItem(city.city_name);
 
+    localStorage.setItem(city.city_name, JSON.stringify(city));
+    this.in_favorites = true;
+
+  }
+
+  removeFromFavorites(city) {
+
+    localStorage.removeItem(city.city_name)
+    this.in_favorites = false;
   }
 
   getSearchResults(searched_city) {
+    this.searchResults = true;
 
-    console.log(this.response_search);
-
-    // this._weatherService.getSearchResults("Jerusalem").subscribe(
-    //   response => {
-    //     console.log(response);
-    //   }
-    // );
+    this._weatherService.getSearchResults(searched_city).subscribe(
+      response => {
+        this.response_search = response;
+      }
+    );
   }
 
-  getCurrentCityWeather(city) {
-    this.CityWeather.city_name = city;
-    this.CityWeather.current_temp = Math.round(this.response_current[0].Temperature.Metric.Value)
-    this.CityWeather.weather_description = this.response_current[0].WeatherText;
-    this.CityWeather.icon = this.response_current[0].WeatherIcon;
-
+  getCurrentCityWeather(city_key, city_name, get_data) {
+    this.searchResults = false;
+    this.CityWeather.city_name = city_name;
     let index = 0;
 
-    for (let city of this.response_daily.DailyForecasts) {
-      this.CityForecast[index] = new CityForecast();
-      this.CityForecast[index].day = this.getDay(city.Date);
-      this.CityForecast[index].date = this.getDate(city.Date);
-      this.CityForecast[index].icon = city.Day.Icon;
-      this.CityForecast[index].max_temp = Math.round(city.Temperature.Maximum.Value)
-      this.CityForecast[index].min_temp = Math.round(city.Temperature.Minimum.Value)
-      index++;
+    if (get_data) {
+      this._weatherService.getCityWeather(city_key).subscribe(
+        response => {
+          this.response_current = response;
+          this.CityWeather.current_temp = Math.round(this.response_current[0].Temperature.Metric.Value)
+          this.CityWeather.weather_description = this.response_current[0].WeatherText;
+          this.CityWeather.icon = this.response_current[0].WeatherIcon;
+        }
+      );
+
+
+      this._weatherService.getFiveDaysForecast(city_key).subscribe(
+        response => {
+          this.response_daily = response;
+          for (let city of this.response_daily.DailyForecasts) {
+            this.CityForecast[index] = new CityForecast();
+            this.CityForecast[index].day = this.getDay(city.Date);
+            this.CityForecast[index].date = this.getDate(city.Date);
+            this.CityForecast[index].icon = city.Day.Icon;
+            this.CityForecast[index].max_temp = Math.round(city.Temperature.Maximum.Value)
+            this.CityForecast[index].min_temp = Math.round(city.Temperature.Minimum.Value)
+            index++;
+          }
+        }
+      );
     }
 
+    else {
+
+      if(localStorage.getItem(this.CityWeather.city_name) != null)
+        this.in_favorites = true;
+
+      this.CityWeather.current_temp = Math.round(this.response_current[0].Temperature.Metric.Value)
+      this.CityWeather.weather_description = this.response_current[0].WeatherText;
+      this.CityWeather.icon = this.response_current[0].WeatherIcon;
+
+      for (let city of this.response_daily.DailyForecasts) {
+        this.CityForecast[index] = new CityForecast();
+        this.CityForecast[index].day = this.getDay(city.Date);
+        this.CityForecast[index].date = this.getDate(city.Date);
+        this.CityForecast[index].icon = city.Day.Icon;
+        this.CityForecast[index].max_temp = Math.round(city.Temperature.Maximum.Value)
+        this.CityForecast[index].min_temp = Math.round(city.Temperature.Minimum.Value)
+        index++;
+      }
+    }
   }
 
   getDay(day_string) {
@@ -86,6 +124,4 @@ export class HomePageComponent implements OnInit {
 
     return date_parts[2] + "/" + date_parts[1];
   }
-
-
 }

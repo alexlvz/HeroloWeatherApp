@@ -1,26 +1,10 @@
-<nav class="nav-style navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">Herolo WeatherApp</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
-    aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="nav navbar-nav ml-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="#">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Favorites</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
 <div class="search">
   <div class="input-group">
-    <input type="text" class="form-control" placeholder="Search for a city..." (keyup.enter)="getSearchResults()" [(ngModel)]="searched_city">
+    <input type="text" class="form-control" placeholder="Search for a city..." (keyup.enter)="getSearchResults(searched_city)"
+      [(ngModel)]="searched_city">
     <span class="input-group-btn">
-      <button class="btn btn-search" type="button" (click)="getSearchResults()"><i class="fa fa-search fa-fw"></i></button>
+      <button class="btn btn-search" type="button" (click)="getSearchResults(searched_city)"><i
+class="fa fa-search fa-fw"></i></button>
     </span>
   </div>
 </div>
@@ -30,32 +14,33 @@
     <table class="top_main_view" align="center">
       <tr class="spaceUnderTop">
         <td align="left">
-          <table style="width: 30%">
+          <table style="width: 40%">
             <tr>
               <td>
                 <img src='{{"/assets/icons/" + this.CityWeather.icon +"-s.png"}}' alt="" height="120%" width="100%" />
               </td>
               <td valign="center">
-                {{this.CityWeather.city_name}}
+                <span style="font-size: 22pt ;text-shadow: 2px 1px 10px #000000;">{{this.CityWeather.city_name}}</span>
                 <br>
-                {{this.CityWeather.current_temp}}&nbsp;&#8451;
+                <span style="font-size: 18pt ;text-shadow: 2px 1px 10px #000000;">{{this.CityWeather.current_temp}}&nbsp;&#8451;</span>
               </td>
             </tr>
 
           </table>
         </td>
         <td align="right" valign="top">
-          <button>Add to favorites</button>
+          <button *ngIf="!in_favorites" class="favorites_button" [disabled]="searchResults" (click)="saveToFavorites(this.CityWeather)"><i class="fa fa-heart"></i>&nbsp;&nbsp;Add To avorites</button>
+          <button *ngIf="in_favorites" class="favorites_button" [disabled]="searchResults" (click)="removeFromFavorites(this.CityWeather)">Remove From favorites</button>
         </td>
       </tr>
     </table>
-    <table class="main_view" align="center">
+    <table class="main_view" align="center" *ngIf="!searchResults">
       <tr class="spaceUnderMain">
-        <td style="font-size: 42pt" align="center" colspan="5">
+        <td style="font-size: 42pt; text-shadow: 1px 1px 7px #1f1f1f;" align="center" colspan="5">
           {{this.CityWeather.weather_description}}
         </td>
       </tr>
-      <tr>
+      <tr style="font-size:14pt">
         <td align="center">
           {{this.CityForecast[0].day}}
           <br>
@@ -83,39 +68,47 @@
         </td>
       </tr>
       <tr>
-          <td align="center">
-              <img src='{{"/assets/icons/" + this.CityForecast[0].icon +"-s.png"}}' alt=""/>
-          </td>
-          <td align="center">
-              <img src='{{"/assets/icons/" + this.CityForecast[1].icon +"-s.png"}}' alt=""/>
-          </td>
-          <td align="center">
-              <img src='{{"/assets/icons/" + this.CityForecast[2].icon +"-s.png"}}' alt=""/>
-          </td>
-          <td align="center">
-              <img src='{{"/assets/icons/" + this.CityForecast[3].icon +"-s.png"}}' alt=""/>
-          </td>
-          <td align="center">
-              <img src='{{"/assets/icons/" + this.CityForecast[4].icon +"-s.png"}}' alt=""/>
-          </td>
-        </tr>
-        <tr>
-            <td align="center">
-              {{this.CityForecast[0].max_temp}}/{{this.CityForecast[0].min_temp}}&nbsp;&#8451;
-            </td>
-            <td align="center">
-              {{this.CityForecast[1].max_temp}}/{{this.CityForecast[1].min_temp}}&nbsp;&#8451;
-            </td>
-            <td align="center">
-              {{this.CityForecast[2].max_temp}}/{{this.CityForecast[2].min_temp}}&nbsp;&#8451;
-            </td>
-            <td align="center">
-              {{this.CityForecast[3].max_temp}}/{{this.CityForecast[3].min_temp}}&nbsp;&#8451;
-            </td>
-            <td align="center">
-              {{this.CityForecast[4].max_temp}}/{{this.CityForecast[4].min_temp}}&nbsp;&#8451;
-            </td>
-          </tr>
+        <td align="center">
+          <img src='{{"/assets/icons/" + this.CityForecast[0].icon +"-s.png"}}' alt="" />
+        </td>
+        <td align="center">
+          <img src='{{"/assets/icons/" + this.CityForecast[1].icon +"-s.png"}}' alt="" />
+        </td>
+        <td align="center">
+          <img src='{{"/assets/icons/" + this.CityForecast[2].icon +"-s.png"}}' alt="" />
+        </td>
+        <td align="center">
+          <img src='{{"/assets/icons/" + this.CityForecast[3].icon +"-s.png"}}' alt="" />
+        </td>
+        <td align="center">
+          <img src='{{"/assets/icons/" + this.CityForecast[4].icon +"-s.png"}}' alt="" />
+        </td>
+      </tr>
+      <tr style="font-size:13pt">
+        <td align="center">
+          {{this.CityForecast[0].max_temp}}/{{this.CityForecast[0].min_temp}}&nbsp;&#8451;
+        </td>
+        <td align="center">
+          {{this.CityForecast[1].max_temp}}/{{this.CityForecast[1].min_temp}}&nbsp;&#8451;
+        </td>
+        <td align="center">
+          {{this.CityForecast[2].max_temp}}/{{this.CityForecast[2].min_temp}}&nbsp;&#8451;
+        </td>
+        <td align="center">
+          {{this.CityForecast[3].max_temp}}/{{this.CityForecast[3].min_temp}}&nbsp;&#8451;
+        </td>
+        <td align="center">
+          {{this.CityForecast[4].max_temp}}/{{this.CityForecast[4].min_temp}}&nbsp;&#8451;
+        </td>
+      </tr>
+    </table>
+    <table align="center" *ngIf="searchResults">
+      <tr *ngFor="let result of this.response_search; let i=index;">
+        <td valign = "center">
+          <button style="width: 300px" (click)="getCurrentCityWeather(result.Key,result.LocalizedName,true)">{{result.Country.LocalizedName}} - {{result.AdministrativeArea.ID}}
+          </button>
+        </td>
+      </tr>
     </table>
   </div>
 
